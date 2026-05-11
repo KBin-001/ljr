@@ -11,6 +11,7 @@ import { loadAmap, openAmapNavigation } from "./utils/amap";
 export default function App() {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const [currentDay, setCurrentDay] = useState(1);
+  const [mapError, setMapError] = useState("");
   const currentPlan = plannedDays[currentDay - 1];
   const dayOptions = useMemo(() => plannedDays, []);
 
@@ -19,6 +20,7 @@ export default function App() {
 
     let map: any;
     let cancelled = false;
+    setMapError("");
 
     loadAmap()
       .then((AMap) => {
@@ -66,8 +68,8 @@ export default function App() {
         map.add([startMarker, ...markers, polyline]);
         map.setFitView([startMarker, ...markers, polyline], false, [54, 32, 32, 32]);
       })
-      .catch(() => {
-        // The route list remains usable even if the map script is blocked.
+      .catch((error) => {
+        setMapError(error instanceof Error ? error.message : "高德地图加载失败");
       });
 
     return () => {
@@ -146,6 +148,13 @@ export default function App() {
 
       <section className="map-card">
         <div ref={mapRef} className="map" />
+        {mapError && (
+          <div className="map-error">
+            <strong>地图加载失败</strong>
+            <span>{mapError}</span>
+            <span>请确认高德 JS API Key 的域名白名单包含 kbin-001.github.io</span>
+          </div>
+        )}
       </section>
 
       <section className="day-summary">

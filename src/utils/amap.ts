@@ -17,7 +17,7 @@ export function loadAmap() {
   const securityJsCode = import.meta.env.VITE_AMAP_SECURITY_CODE;
 
   if (!key || !securityJsCode) {
-    return Promise.reject(new Error("缺少高德 JS API Key 或 securityJsCode"));
+    return Promise.reject(new Error("缺少高德 JS API Key 或 securityJsCode，请检查 GitHub Actions Secrets"));
   }
 
   window._AMapSecurityConfig = { securityJsCode };
@@ -28,8 +28,14 @@ export function loadAmap() {
       key,
     )}&plugin=AMap.Scale,AMap.ToolBar,AMap.Geocoder,AMap.PlaceSearch`;
     script.async = true;
-    script.onload = () => resolve(window.AMap);
-    script.onerror = () => reject(new Error("高德地图 JS API 加载失败"));
+    script.onload = () => {
+      if (window.AMap) {
+        resolve(window.AMap);
+        return;
+      }
+      reject(new Error("高德脚本已返回，但 AMap 未初始化，通常是 Key 或域名白名单问题"));
+    };
+    script.onerror = () => reject(new Error("高德地图 JS API 加载失败，请检查网络或域名白名单"));
     document.head.appendChild(script);
   });
 
