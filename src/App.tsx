@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { shops } from "./data/shops";
 import type { Shop } from "./data/shops";
-import { buildAmapNavigationUrl, geocodeByJsApi, loadAmap, searchPoiByJsApi } from "./utils/amap";
+import { geocodeByJsApi, loadAmap, openAmapNavigation, searchPoiByJsApi } from "./utils/amap";
 import { buildFallbackCoords, estimateShopCoord } from "./utils/fallbackCoords";
 import { mergeCoords, planRoutes } from "./utils/optimizer";
 import type { PlannedDay } from "./utils/optimizer";
@@ -363,9 +363,9 @@ export default function App() {
                 <p>{shop.address}</p>
                 <div className="shop-meta">
                   <span>{shop.type}</span>
-                  <a href={buildAmapNavigationUrl(shop)} target="_blank" rel="noreferrer">
+                  <button type="button" onClick={() => openAmapNavigation(shop)}>
                     打开高德导航
-                  </a>
+                  </button>
                 </div>
               </div>
             </article>

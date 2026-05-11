@@ -110,7 +110,26 @@ export async function geocodeByJsApi(address: string, city = "深圳", timeoutMs
   });
 }
 
-export function buildAmapNavigationUrl(shop: { name: string; lng: number; lat: number }) {
+type NavigationTarget = {
+  name: string;
+  lng: number;
+  lat: number;
+};
+
+export function buildAmapAppNavigationUrl(shop: NavigationTarget) {
+  const params = new URLSearchParams({
+    sourceApplication: "深圳门店路线规划",
+    poiname: shop.name,
+    lat: String(shop.lat),
+    lon: String(shop.lng),
+    dev: "0",
+    style: "2",
+  });
+
+  return `amapuri://route/plan/?${params.toString()}`;
+}
+
+export function buildAmapWebNavigationUrl(shop: NavigationTarget) {
   const params = new URLSearchParams({
     sourceApplication: "深圳门店路线规划",
     poiname: shop.name,
@@ -121,4 +140,29 @@ export function buildAmapNavigationUrl(shop: { name: string; lng: number; lat: n
   });
 
   return `https://uri.amap.com/navigation?${params.toString()}`;
+}
+
+export function openAmapNavigation(shop: NavigationTarget) {
+  const appUrl = buildAmapAppNavigationUrl(shop);
+  const webUrl = buildAmapWebNavigationUrl(shop);
+  let shouldFallback = true;
+
+  const cancelFallback = () => {
+    shouldFallback = false;
+  };
+
+  window.addEventListener("pagehide", cancelFallback, { once: true });
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      shouldFallback = false;
+    }
+  }, { once: true });
+
+  window.location.href = appUrl;
+
+  window.setTimeout(() => {
+    if (shouldFallback) {
+      window.location.href = webUrl;
+    }
+  }, 1200);
 }

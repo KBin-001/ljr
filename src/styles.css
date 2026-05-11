@@ -260,7 +260,7 @@ button:disabled {
   font-size: 13px;
 }
 
-.shop-meta a {
+.shop-meta button {
   flex: 0 0 auto;
   border-radius: 8px;
   min-height: 42px;
