@@ -200,20 +200,6 @@ export default function App() {
         </nav>
       )}
 
-      <section className="map-card">
-        <div ref={mapRef} className="map" />
-        {mapError && (
-          <div className="map-error">
-            {currentPlan && <MiniRouteMap day={currentPlan} />}
-            <div className="map-error-text">
-              <strong>高德地图加载失败，已显示离线路线图</strong>
-              <span>{mapError}</span>
-              <span>请确认高德 JS API Key 的域名白名单包含 kbin-001.github.io</span>
-            </div>
-          </div>
-        )}
-      </section>
-
       <section className="day-summary">
         <div>
           <span>当天门店</span>
@@ -249,6 +235,20 @@ export default function App() {
             </div>
           </article>
         ))}
+      </section>
+
+      <section className="map-card">
+        <div ref={mapRef} className="map" />
+        {mapError && (
+          <div className="map-error">
+            {currentPlan && <MiniRouteMap day={currentPlan} />}
+            <div className="map-error-text">
+              <strong>高德地图加载失败，已显示离线路线图</strong>
+              <span>{mapError}</span>
+              <span>请确认高德 JS API Key 的域名白名单包含 kbin-001.github.io</span>
+            </div>
+          </div>
+        )}
       </section>
     </main>
   );
