@@ -156,21 +156,89 @@ button:disabled {
   position: absolute;
   inset: 0;
   display: grid;
-  place-content: center;
-  gap: 8px;
-  padding: 18px;
+  grid-template-rows: 1fr auto;
+  gap: 10px;
+  padding: 12px;
+  color: #253247;
+  background: #f7fbff;
+}
+
+.map-error-text {
+  display: grid;
+  gap: 4px;
+  padding: 10px;
+  border-radius: 8px;
   color: #7a1f2b;
   background: #fff5f5;
   text-align: center;
-  line-height: 1.45;
+  line-height: 1.35;
 }
 
-.map-error strong {
+.map-error-text strong {
   font-size: 18px;
 }
 
-.map-error span {
+.map-error-text span {
   font-size: 14px;
+}
+
+.fallback-map {
+  display: grid;
+  gap: 8px;
+  min-height: 0;
+}
+
+.fallback-map svg {
+  width: 100%;
+  height: min(32vh, 260px);
+  min-height: 190px;
+}
+
+.fallback-map rect {
+  fill: #eaf1f8;
+}
+
+.fallback-map polyline {
+  fill: none;
+  stroke: #1677ff;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 5;
+}
+
+.fallback-map circle {
+  stroke: #ffffff;
+  stroke-width: 4;
+}
+
+.fallback-map .start-dot {
+  fill: #12284c;
+}
+
+.fallback-map .shop-dot {
+  fill: #e5484d;
+}
+
+.fallback-map text {
+  fill: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.fallback-note {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  color: #4f5f72;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.fallback-note strong {
+  flex: 0 0 auto;
+  color: #12284c;
 }
 
 .map-marker {
