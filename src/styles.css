@@ -1,0 +1,290 @@
+:root {
+  color: #18212f;
+  background: #eef3f8;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  border: 0;
+  border-radius: 8px;
+  min-height: 44px;
+  padding: 0 14px;
+  color: #ffffff;
+  background: #1677ff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.app-shell {
+  width: min(100%, 760px);
+  margin: 0 auto;
+  padding: 14px 12px 28px;
+}
+
+.top-panel {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 10px 28px rgb(31 48 70 / 8%);
+}
+
+.top-panel h1 {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+.top-panel p {
+  margin: 8px 0 0;
+  color: #5c697a;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.stats-grid div,
+.day-summary div {
+  padding: 12px;
+  border-radius: 8px;
+  background: #f5f8fb;
+}
+
+.stats-grid span,
+.day-summary span {
+  display: block;
+  color: #687789;
+  font-size: 12px;
+}
+
+.stats-grid strong,
+.day-summary strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 20px;
+}
+
+.stats-grid .start-name {
+  font-size: 16px;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.actions .ghost {
+  color: #233248;
+  background: #dfe7f0;
+}
+
+.day-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding-bottom: 2px;
+  overflow-x: auto;
+}
+
+.day-tabs button {
+  flex: 0 0 auto;
+  min-height: 38px;
+  color: #334155;
+  background: #ffffff;
+  border: 1px solid #d8e1ec;
+}
+
+.day-tabs button.active {
+  color: #ffffff;
+  background: #12284c;
+  border-color: #12284c;
+}
+
+.map-card {
+  overflow: hidden;
+  border-radius: 8px;
+  background: #dce5ef;
+  box-shadow: 0 10px 28px rgb(31 48 70 / 8%);
+}
+
+.map {
+  width: 100%;
+  height: 45vh;
+  min-height: 320px;
+}
+
+.map-marker {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 3px solid #ffffff;
+  border-radius: 999px;
+  color: #ffffff;
+  background: #e5484d;
+  box-shadow: 0 6px 14px rgb(0 0 0 / 22%);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.start-marker {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 3px solid #ffffff;
+  border-radius: 999px;
+  color: #ffffff;
+  background: #12284c;
+  box-shadow: 0 6px 14px rgb(0 0 0 / 22%);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.day-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.shop-list {
+  display: grid;
+  gap: 10px;
+}
+
+.shop-card,
+.empty-card {
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 10px 28px rgb(31 48 70 / 8%);
+}
+
+.shop-card {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 10px;
+  padding: 14px;
+}
+
+.order-badge {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  color: #ffffff;
+  background: #e5484d;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.shop-content {
+  min-width: 0;
+}
+
+.shop-title {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.shop-title h2 {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.3;
+}
+
+.shop-title span {
+  flex: 0 0 auto;
+  color: #687789;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.shop-card p {
+  margin: 6px 0 0;
+  color: #4f5f72;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.shop-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.shop-meta span {
+  color: #5c697a;
+  font-size: 13px;
+}
+
+.shop-meta a {
+  flex: 0 0 auto;
+  border-radius: 8px;
+  min-height: 42px;
+  padding: 10px 14px;
+  color: #ffffff;
+  background: #0f8f63;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.empty-card {
+  padding: 18px;
+  color: #5c697a;
+  line-height: 1.5;
+}
+
+@media (min-width: 680px) {
+  .top-panel {
+    grid-template-columns: 1.15fr 1fr;
+    align-items: center;
+  }
+
+  .actions {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
