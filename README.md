@@ -45,3 +45,20 @@ AMAP_WEB_SERVICE_KEY=你的高德 Web服务 Key
 ```
 
 部署后需要在高德控制台把 Pages 域名加入 JS API Key 的域名白名单。
+
+## GitHub Pages
+
+推送到 `main` 后，GitHub Actions 会自动构建并部署到：
+
+```text
+https://KBin-001.github.io/ljr/
+```
+
+需要在 GitHub 仓库 Settings -> Secrets and variables -> Actions 添加：
+
+```text
+VITE_AMAP_JS_KEY
+VITE_AMAP_SECURITY_CODE
+```
+
+同时在高德控制台把 `KBin-001.github.io` 加入 JS API Key 的域名白名单。

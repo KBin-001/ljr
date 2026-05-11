@@ -102,5 +102,6 @@ function devGeocodeProxy(): Plugin {
 }
 
 export default defineConfig({
+  base: process.env.GITHUB_PAGES === "true" ? "/ljr/" : "/",
   plugins: [react(), devGeocodeProxy()],
 });
