@@ -119,11 +119,11 @@ type NavigationTarget = {
 export function buildAmapAppNavigationUrl(shop: NavigationTarget) {
   const params = new URLSearchParams({
     sourceApplication: "深圳门店路线规划",
-    poiname: shop.name,
-    lat: String(shop.lat),
-    lon: String(shop.lng),
+    dname: shop.name,
+    dlat: String(shop.lat),
+    dlon: String(shop.lng),
     dev: "0",
-    style: "2",
+    t: "0",
   });
 
   return `amapuri://route/plan/?${params.toString()}`;
@@ -132,11 +132,9 @@ export function buildAmapAppNavigationUrl(shop: NavigationTarget) {
 export function buildAmapWebNavigationUrl(shop: NavigationTarget) {
   const params = new URLSearchParams({
     sourceApplication: "深圳门店路线规划",
-    poiname: shop.name,
-    lat: String(shop.lat),
-    lon: String(shop.lng),
+    to: `${shop.lng},${shop.lat},${shop.name}`,
     dev: "0",
-    style: "2",
+    mode: "walk",
   });
 
   return `https://uri.amap.com/navigation?${params.toString()}`;
