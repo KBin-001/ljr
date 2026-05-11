@@ -2,6 +2,7 @@ export type Shop = {
   type: string;
   code: string;
   name: string;
+  rawName?: string;
   district: string;
   address: string;
 };
