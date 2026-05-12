@@ -16,65 +16,37 @@ function previewName(point: { name: string; rawName?: string; order?: number }) 
 }
 
 function OfflineRouteMap({ day }: { day: RouteDay }) {
-  const points = [
-    { ...ROUTE_START_POINT, order: 0, label: "起" },
-    ...day.shops.map((shop) => ({ ...shop, label: String(shop.order) })),
+  const rows = [
+    { label: "起", name: ROUTE_START_POINT.name, meta: ROUTE_START_POINT.address, isStart: true },
+    ...day.shops.map((shop) => ({
+      label: String(shop.order),
+      name: previewName(shop),
+      meta: `${shop.district} · ${shop.code}`,
+      isStart: false,
+    })),
   ];
-  const lngs = points.map((point) => point.lng);
-  const lats = points.map((point) => point.lat);
-  const minLng = Math.min(...lngs);
-  const maxLng = Math.max(...lngs);
-  const minLat = Math.min(...lats);
-  const maxLat = Math.max(...lats);
-  const width = 360;
-  const height = 260;
-  const padding = 34;
-  const lngRange = Math.max(maxLng - minLng, 0.001);
-  const latRange = Math.max(maxLat - minLat, 0.001);
-
-  const projected = points.map((point) => ({
-    ...point,
-    x: padding + ((point.lng - minLng) / lngRange) * (width - padding * 2),
-    y: height - padding - ((point.lat - minLat) / latRange) * (height - padding * 2),
-  }));
 
   return (
     <section className="offline-map-card" aria-label="当天离线路线图">
       <div className="offline-map-head">
         <strong>静态路线预览</strong>
-        <span>固定图片式预览，不需要拖动地图；按起点到 1-5 的访问顺序绘制。</span>
+        <span>按访问顺序排列，不需要拖动地图；从宝田一路出发依次拜访 1-5。</span>
       </div>
-      <svg className="static-preview" viewBox={`0 0 ${width} ${height}`} role="img" aria-label="当天静态路线预览图">
-        <rect width={width} height={height} rx="8" />
-        <path className="preview-grid" d="M34 52H326M34 104H326M34 156H326M34 208H326M92 34V226M150 34V226M208 34V226M266 34V226" />
-        <polyline points={projected.map((point) => `${point.x},${point.y}`).join(" ")} />
-        {projected.map((point) => (
-          <g key={`${point.label}-${point.name}`} transform={`translate(${point.x} ${point.y})`}>
-            <circle className={point.order === 0 ? "start-dot" : "shop-dot"} r="15" />
-            <text>{point.label}</text>
-          </g>
-        ))}
-        {projected.map((point, index) => {
-          const labelX = point.x < width / 2 ? point.x + 21 : point.x - 21;
-          const labelY = Math.max(22, Math.min(height - 12, point.y + (index % 2 === 0 ? -18 : 24)));
-          return (
-            <text
-              className="point-name"
-              key={`name-${point.label}-${point.name}`}
-              x={labelX}
-              y={labelY}
-              textAnchor={point.x < width / 2 ? "start" : "end"}
-            >
-              {previewName(point)}
-            </text>
-          );
-        })}
-      </svg>
-      <div className="preview-legend">
-        {day.shops.map((shop) => (
-          <span key={shop.code}>
-            {shop.order}. {previewName(shop)}
-          </span>
+      <div className="route-preview-list">
+        {rows.map((row, index) => (
+          <div className="route-preview-row" key={`${row.label}-${row.name}`}>
+            <div className="route-node-wrap">
+              {index > 0 && <span className="route-line route-line-top" />}
+              <span className={row.isStart ? "route-node route-node-start" : "route-node"}>
+                {row.label}
+              </span>
+              {index < rows.length - 1 && <span className="route-line route-line-bottom" />}
+            </div>
+            <div className={row.isStart ? "route-preview-content route-preview-start" : "route-preview-content"}>
+              <strong>{row.name}</strong>
+              <span>{row.meta}</span>
+            </div>
+          </div>
         ))}
       </div>
     </section>
