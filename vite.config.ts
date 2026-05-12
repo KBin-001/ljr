@@ -4,6 +4,8 @@ import fs from "node:fs";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import path from "node:path";
 
+import { cloudflare } from "@cloudflare/vite-plugin";
+
 function readDevVars() {
   const file = path.resolve(process.cwd(), ".dev.vars");
   if (!fs.existsSync(file)) return {};
@@ -103,5 +105,5 @@ function devGeocodeProxy(): Plugin {
 
 export default defineConfig({
   base: process.env.GITHUB_PAGES === "true" ? "/ljr/" : "/",
-  plugins: [react(), devGeocodeProxy()],
+  plugins: [react(), devGeocodeProxy(), cloudflare()],
 });
