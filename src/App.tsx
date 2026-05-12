@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   DUPLICATE_SHOP_COUNT,
   EXCLUDED_SHOP_COUNT,
@@ -6,11 +6,11 @@ import {
   ROUTE_START_POINT,
   plannedDays,
 } from "./data/precomputedRoutes";
-import { loadAmap, openAmapNavigation } from "./utils/amap";
+import { openAmapNavigation } from "./utils/amap";
 
 type RouteDay = (typeof plannedDays)[number];
 
-function MiniRouteMap({ day }: { day: RouteDay }) {
+function OfflineRouteMap({ day }: { day: RouteDay }) {
   const points = [
     { ...ROUTE_START_POINT, order: 0, label: "起" },
     ...day.shops.map((shop) => ({ ...shop, label: String(shop.order) })),
@@ -34,7 +34,11 @@ function MiniRouteMap({ day }: { day: RouteDay }) {
   }));
 
   return (
-    <div className="fallback-map">
+    <section className="offline-map-card" aria-label="当天离线路线图">
+      <div className="offline-map-head">
+        <strong>离线路线图</strong>
+        <span>不依赖网页地图，按经纬度绘制起点与当天 5 家门店。</span>
+      </div>
       <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label="当天离线路线图">
         <rect width={width} height={height} rx="8" />
         <polyline points={projected.map((point) => `${point.x},${point.y}`).join(" ")} />
@@ -45,92 +49,15 @@ function MiniRouteMap({ day }: { day: RouteDay }) {
           </g>
         ))}
       </svg>
-      <div className="fallback-note">
-        <strong>本地路线图</strong>
-        <span>高德地图未加载时自动显示，导航按钮仍可打开高德 App。</span>
-      </div>
-    </div>
+      <div className="offline-map-note">导航仍使用每家门店的“打开高德导航”按钮。</div>
+    </section>
   );
 }
 
 export default function App() {
-  const mapRef = useRef<HTMLDivElement | null>(null);
   const [currentDay, setCurrentDay] = useState(1);
-  const [mapError, setMapError] = useState("");
   const currentPlan = plannedDays[currentDay - 1];
   const dayOptions = useMemo(() => plannedDays, []);
-
-  useEffect(() => {
-    if (!mapRef.current) return;
-
-    let map: any;
-    let cancelled = false;
-    setMapError("");
-    const timeoutId = window.setTimeout(() => {
-      if (!cancelled) {
-        setMapError("手机浏览器未能加载高德地图，已自动显示本地路线图");
-      }
-    }, 8000);
-
-    loadAmap()
-      .then((AMap) => {
-        if (cancelled || !mapRef.current) return;
-        window.clearTimeout(timeoutId);
-        setMapError("");
-
-        map = new AMap.Map(mapRef.current, {
-          zoom: 12,
-          resizeEnable: true,
-          viewMode: "2D",
-        });
-
-        map.addControl(new AMap.Scale());
-        map.addControl(new AMap.ToolBar({ position: "RB" }));
-
-        if (!currentPlan?.shops.length) return;
-
-        const startMarker = new AMap.Marker({
-          position: [ROUTE_START_POINT.lng, ROUTE_START_POINT.lat],
-          anchor: "center",
-          content: `<div class="start-marker">起</div>`,
-          title: ROUTE_START_POINT.name,
-        });
-
-        const markers = currentPlan.shops.map((shop) => {
-          return new AMap.Marker({
-            position: [shop.lng, shop.lat],
-            anchor: "center",
-            content: `<div class="map-marker">${shop.order}</div>`,
-            title: shop.name,
-          });
-        });
-
-        const polyline = new AMap.Polyline({
-          path: [
-            [ROUTE_START_POINT.lng, ROUTE_START_POINT.lat],
-            ...currentPlan.shops.map((shop) => [shop.lng, shop.lat]),
-          ],
-          strokeColor: "#1677ff",
-          strokeWeight: 5,
-          strokeOpacity: 0.9,
-          lineJoin: "round",
-          lineCap: "round",
-        });
-
-        map.add([startMarker, ...markers, polyline]);
-        map.setFitView([startMarker, ...markers, polyline], false, [54, 32, 32, 32]);
-      })
-      .catch((error) => {
-        window.clearTimeout(timeoutId);
-        setMapError(error instanceof Error ? error.message : "高德地图加载失败");
-      });
-
-    return () => {
-      cancelled = true;
-      window.clearTimeout(timeoutId);
-      if (map) map.destroy();
-    };
-  }, [currentPlan]);
 
   return (
     <main className="app-shell">
@@ -237,19 +164,7 @@ export default function App() {
         ))}
       </section>
 
-      <section className="map-card">
-        <div ref={mapRef} className="map" />
-        {mapError && (
-          <div className="map-error">
-            {currentPlan && <MiniRouteMap day={currentPlan} />}
-            <div className="map-error-text">
-              <strong>高德地图加载失败，已显示离线路线图</strong>
-              <span>{mapError}</span>
-              <span>请确认高德 JS API Key 的域名白名单包含 kbin-001.github.io</span>
-            </div>
-          </div>
-        )}
-      </section>
+      {currentPlan && <OfflineRouteMap day={currentPlan} />}
     </main>
   );
 }

@@ -137,68 +137,43 @@ button:disabled {
   border-color: #12284c;
 }
 
-.map-card {
-  position: relative;
-  overflow: hidden;
+.offline-map-card {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 12px;
   border-radius: 8px;
-  background: #dce5ef;
+  background: #ffffff;
   box-shadow: 0 10px 28px rgb(31 48 70 / 8%);
 }
 
-.map {
-  position: relative;
-  width: 100%;
-  height: 45vh;
-  min-height: 320px;
-}
-
-.map-error {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  grid-template-rows: 1fr auto;
-  gap: 10px;
-  padding: 12px;
-  color: #253247;
-  background: #f7fbff;
-}
-
-.map-error-text {
+.offline-map-head {
   display: grid;
   gap: 4px;
-  padding: 10px;
-  border-radius: 8px;
-  color: #7a1f2b;
-  background: #fff5f5;
-  text-align: center;
-  line-height: 1.35;
 }
 
-.map-error-text strong {
-  font-size: 18px;
+.offline-map-head strong {
+  font-size: 17px;
 }
 
-.map-error-text span {
-  font-size: 14px;
+.offline-map-head span,
+.offline-map-note {
+  color: #5c697a;
+  font-size: 13px;
+  line-height: 1.45;
 }
 
-.fallback-map {
-  display: grid;
-  gap: 8px;
-  min-height: 0;
-}
-
-.fallback-map svg {
+.offline-map-card svg {
   width: 100%;
-  height: min(32vh, 260px);
-  min-height: 190px;
+  height: min(38vh, 300px);
+  min-height: 220px;
 }
 
-.fallback-map rect {
+.offline-map-card rect {
   fill: #eaf1f8;
 }
 
-.fallback-map polyline {
+.offline-map-card polyline {
   fill: none;
   stroke: #1677ff;
   stroke-linecap: round;
@@ -206,39 +181,25 @@ button:disabled {
   stroke-width: 5;
 }
 
-.fallback-map circle {
+.offline-map-card circle {
   stroke: #ffffff;
   stroke-width: 4;
 }
 
-.fallback-map .start-dot {
+.offline-map-card .start-dot {
   fill: #12284c;
 }
 
-.fallback-map .shop-dot {
+.offline-map-card .shop-dot {
   fill: #e5484d;
 }
 
-.fallback-map text {
+.offline-map-card text {
   fill: #ffffff;
   font-size: 14px;
   font-weight: 800;
   text-anchor: middle;
   dominant-baseline: central;
-}
-
-.fallback-note {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  color: #4f5f72;
-  font-size: 13px;
-  line-height: 1.35;
-}
-
-.fallback-note strong {
-  flex: 0 0 auto;
-  color: #12284c;
 }
 
 .map-marker {
