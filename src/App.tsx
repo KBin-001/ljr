@@ -10,6 +10,11 @@ import { openAmapNavigation } from "./utils/amap";
 
 type RouteDay = (typeof plannedDays)[number];
 
+function previewName(point: { name: string; rawName?: string; order?: number }) {
+  if (point.order === 0) return "宝田一路";
+  return point.rawName || point.name.replace(/^肯德基|^必胜客|^肯悦咖啡/, "");
+}
+
 function OfflineRouteMap({ day }: { day: RouteDay }) {
   const points = [
     { ...ROUTE_START_POINT, order: 0, label: "起" },
@@ -36,11 +41,12 @@ function OfflineRouteMap({ day }: { day: RouteDay }) {
   return (
     <section className="offline-map-card" aria-label="当天离线路线图">
       <div className="offline-map-head">
-        <strong>离线路线图</strong>
-        <span>不依赖网页地图，按经纬度绘制起点与当天 5 家门店。</span>
+        <strong>静态路线预览</strong>
+        <span>固定图片式预览，不需要拖动地图；按起点到 1-5 的访问顺序绘制。</span>
       </div>
-      <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label="当天离线路线图">
+      <svg className="static-preview" viewBox={`0 0 ${width} ${height}`} role="img" aria-label="当天静态路线预览图">
         <rect width={width} height={height} rx="8" />
+        <path className="preview-grid" d="M34 52H326M34 104H326M34 156H326M34 208H326M92 34V226M150 34V226M208 34V226M266 34V226" />
         <polyline points={projected.map((point) => `${point.x},${point.y}`).join(" ")} />
         {projected.map((point) => (
           <g key={`${point.label}-${point.name}`} transform={`translate(${point.x} ${point.y})`}>
@@ -48,8 +54,29 @@ function OfflineRouteMap({ day }: { day: RouteDay }) {
             <text>{point.label}</text>
           </g>
         ))}
+        {projected.map((point, index) => {
+          const labelX = point.x < width / 2 ? point.x + 21 : point.x - 21;
+          const labelY = Math.max(22, Math.min(height - 12, point.y + (index % 2 === 0 ? -18 : 24)));
+          return (
+            <text
+              className="point-name"
+              key={`name-${point.label}-${point.name}`}
+              x={labelX}
+              y={labelY}
+              textAnchor={point.x < width / 2 ? "start" : "end"}
+            >
+              {previewName(point)}
+            </text>
+          );
+        })}
       </svg>
-      <div className="offline-map-note">导航仍使用每家门店的“打开高德导航”按钮。</div>
+      <div className="preview-legend">
+        {day.shops.map((shop) => (
+          <span key={shop.code}>
+            {shop.order}. {previewName(shop)}
+          </span>
+        ))}
+      </div>
     </section>
   );
 }
