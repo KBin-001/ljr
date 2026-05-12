@@ -16,37 +16,58 @@ function previewName(point: { name: string; rawName?: string; order?: number }) 
 }
 
 function OfflineRouteMap({ day }: { day: RouteDay }) {
-  const rows = [
-    { label: "起", name: ROUTE_START_POINT.name, meta: ROUTE_START_POINT.address, isStart: true },
-    ...day.shops.map((shop) => ({
-      label: String(shop.order),
-      name: previewName(shop),
-      meta: `${shop.district} · ${shop.code}`,
-      isStart: false,
-    })),
+  const points = [
+    { ...ROUTE_START_POINT, order: 0, label: "起" },
+    ...day.shops.map((shop) => ({ ...shop, label: String(shop.order) })),
   ];
+  const lngs = points.map((point) => point.lng);
+  const lats = points.map((point) => point.lat);
+  const minLng = Math.min(...lngs);
+  const maxLng = Math.max(...lngs);
+  const minLat = Math.min(...lats);
+  const maxLat = Math.max(...lats);
+  const width = 360;
+  const height = 260;
+  const padding = 34;
+  const lngRange = Math.max(maxLng - minLng, 0.001);
+  const latRange = Math.max(maxLat - minLat, 0.001);
+
+  const projected = points.map((point) => ({
+    ...point,
+    x: padding + ((point.lng - minLng) / lngRange) * (width - padding * 2),
+    y: height - padding - ((point.lat - minLat) / latRange) * (height - padding * 2),
+  }));
 
   return (
     <section className="offline-map-card" aria-label="当天离线路线图">
       <div className="offline-map-head">
-        <strong>静态路线预览</strong>
-        <span>按访问顺序排列，不需要拖动地图；从宝田一路出发依次拜访 1-5。</span>
+        <strong>静态地图预览</strong>
+        <span>不加载网页地图，只按经纬度画出起点、1-5 编号和访问连线。</span>
       </div>
-      <div className="route-preview-list">
-        {rows.map((row, index) => (
-          <div className="route-preview-row" key={`${row.label}-${row.name}`}>
-            <div className="route-node-wrap">
-              {index > 0 && <span className="route-line route-line-top" />}
-              <span className={row.isStart ? "route-node route-node-start" : "route-node"}>
-                {row.label}
-              </span>
-              {index < rows.length - 1 && <span className="route-line route-line-bottom" />}
-            </div>
-            <div className={row.isStart ? "route-preview-content route-preview-start" : "route-preview-content"}>
-              <strong>{row.name}</strong>
-              <span>{row.meta}</span>
-            </div>
-          </div>
+      <svg className="static-map-preview" viewBox={`0 0 ${width} ${height}`} role="img" aria-label="当天静态地图预览">
+        <defs>
+          <pattern id="map-grid" width="36" height="36" patternUnits="userSpaceOnUse">
+            <path d="M36 0H0V36" />
+          </pattern>
+        </defs>
+        <rect className="map-bg" width={width} height={height} rx="8" />
+        <rect className="map-grid-fill" width={width} height={height} rx="8" />
+        <path className="map-road map-road-a" d="M24 202C82 176 92 104 152 86C224 64 254 104 336 52" />
+        <path className="map-road map-road-b" d="M42 42C92 92 122 142 170 160C224 180 270 154 330 204" />
+        <polyline className="map-route-line" points={projected.map((point) => `${point.x},${point.y}`).join(" ")} />
+        {projected.map((point) => (
+          <g key={`${point.label}-${point.name}`} transform={`translate(${point.x} ${point.y})`}>
+            <circle className={point.order === 0 ? "start-dot" : "shop-dot"} r="15" />
+            <text>{point.label}</text>
+          </g>
+        ))}
+      </svg>
+      <div className="preview-legend">
+        <span className="legend-start">起. 宝田一路</span>
+        {day.shops.map((shop) => (
+          <span key={shop.code}>
+            {shop.order}. {previewName(shop)}
+          </span>
         ))}
       </div>
     </section>
